@@ -1,0 +1,15 @@
+# Core UI
+streamlit>=1.40
+python-dotenv>=1.0
+pydantic>=2.7
+
+# RAG / LLM  (same major versions as the Lead Research Agent, kept in sync)
+langchain>=0.3
+langchain-openai>=0.2
+langchain-chroma>=0.1
+langchain-text-splitters>=0.3
+chromadb>=0.5
+
+# Document parsing
+pypdf>=5.0
+docx2txt>=0.8

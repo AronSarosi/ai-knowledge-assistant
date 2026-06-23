@@ -1,0 +1,14 @@
+# Keep the build fast and the image clean - and never bake secrets in.
+.env
+.env.local
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.chroma/
+*.sqlite3
+.git/
+.gitignore
+.DS_Store
+Thumbs.db
+README.md

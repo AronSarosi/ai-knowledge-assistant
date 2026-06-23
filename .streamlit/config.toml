@@ -1,0 +1,22 @@
+# Theme matched to aronsarosi.com + the other tools: warm sand base, terracotta
+# accent, warm charcoal ink. Fonts (Newsreader + Inter) and finer styling are
+# layered on in theme.py. Colours here drive the widgets Streamlit themes
+# automatically (buttons, chat bubbles, focus rings, table headers).
+
+[theme]
+base = "light"
+primaryColor = "#B5532E"              # terracotta accent
+backgroundColor = "#F2ECE3"           # warm sand
+secondaryBackgroundColor = "#FBF8F2"  # soft card surface
+textColor = "#5B544B"                 # warm grey body (headings overridden darker in CSS)
+borderColor = "#E0D8CB"               # hairline
+font = "sans-serif"
+baseRadius = "0.6rem"
+baseFontSize = 17
+
+[server]
+# Cloud Run friendly: bind all interfaces, no XSRF/CORS friction behind the
+# platform proxy. The port is supplied at runtime via $PORT (see Dockerfile).
+headless = true
+enableCORS = false
+enableXsrfProtection = false
