@@ -14,6 +14,8 @@ internal assistant should do.
 
 from __future__ import annotations
 
+from typing import Any, List
+
 from langchain_core.messages import HumanMessage, SystemMessage
 
 from .config import Settings
@@ -57,6 +59,34 @@ def _build_llm(settings: Settings):
     )
 
 
+def get_callbacks(settings: Settings) -> List[Any]:
+    """Return LangChain callbacks. Includes Langfuse only if its keys are set.
+
+    Tracing is best-effort: if Langfuse isn't installed or fails to start, we
+    return no callbacks rather than break the answer. With no keys (the default)
+    this is a plain no-op.
+    """
+    if not settings.langfuse_enabled:
+        return []
+    try:
+        from langfuse import Langfuse
+        from langfuse.langchain import CallbackHandler
+
+        # In langfuse v3 the CallbackHandler takes no keys; it uses the Langfuse
+        # client, which reads LANGFUSE_PUBLIC_KEY / LANGFUSE_SECRET_KEY /
+        # LANGFUSE_HOST from the environment. Initialise the client explicitly
+        # with our settings first, then hand back a keyless handler.
+        Langfuse(
+            public_key=settings.langfuse_public_key,
+            secret_key=settings.langfuse_secret_key,
+            host=settings.langfuse_host,
+        )
+        return [CallbackHandler()]
+    except Exception:
+        # Tracing is best-effort. Never let it break a run.
+        return []
+
+
 def _format_passages(chunks: list[Chunk]) -> str:
     """Render retrieved chunks as a numbered list for the prompt."""
     blocks = []
@@ -82,7 +112,14 @@ def generate_answer(
             )
         ),
     ]
-    reply = llm.invoke(messages).content.strip()
+    # Attach tracing callbacks only when there are any, so the default (no-key)
+    # path keeps the plain invoke(messages) signature untouched.
+    callbacks = get_callbacks(settings)
+    if callbacks:
+        result = llm.invoke(messages, config={"callbacks": callbacks})
+    else:
+        result = llm.invoke(messages)
+    reply = result.content.strip()
 
     grounded = NOT_FOUND.lower() not in reply.lower()
     citations: list[Citation] = []

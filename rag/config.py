@@ -49,6 +49,12 @@ class Settings:
     azure_embedding_deployment: str = ""
     azure_api_version: str = "2024-08-01-preview"
 
+    # --- Observability ------------------------------------------------------
+    # Langfuse tracing is opt-in: only active when both keys are present.
+    langfuse_public_key: str = ""
+    langfuse_secret_key: str = ""
+    langfuse_host: str = "https://cloud.langfuse.com"
+
     # --- Retrieval tuning ---------------------------------------------------
     # How big each chunk is (characters) and how much neighbouring chunks
     # overlap so a sentence split across a boundary is never lost.
@@ -74,6 +80,10 @@ class Settings:
     demo_question_limit: int = 15
     max_upload_mb: int = 10
     max_files: int = 5
+
+    @property
+    def langfuse_enabled(self) -> bool:
+        return bool(self.langfuse_public_key and self.langfuse_secret_key)
 
     @property
     def embedding_model(self) -> str:
@@ -110,6 +120,9 @@ def load_settings() -> Settings:
         azure_deployment=os.getenv("AZURE_OPENAI_DEPLOYMENT", ""),
         azure_embedding_deployment=os.getenv("AZURE_OPENAI_EMBEDDING_DEPLOYMENT", ""),
         azure_api_version=os.getenv("AZURE_OPENAI_API_VERSION", "2024-08-01-preview"),
+        langfuse_public_key=os.getenv("LANGFUSE_PUBLIC_KEY", ""),
+        langfuse_secret_key=os.getenv("LANGFUSE_SECRET_KEY", ""),
+        langfuse_host=os.getenv("LANGFUSE_HOST", "https://cloud.langfuse.com"),
         chunk_size=int(os.getenv("CHUNK_SIZE", "1000")),
         chunk_overlap=int(os.getenv("CHUNK_OVERLAP", "150")),
         top_k=int(os.getenv("TOP_K", "4")),

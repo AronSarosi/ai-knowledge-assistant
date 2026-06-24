@@ -45,10 +45,19 @@ _CSS = f"""
 }}
 [data-testid="stHeader"] {{ background: transparent; }}
 [data-testid="stBottom"] {{ background: {BASE}; }}
-/* Line the bottom chat bar up with the page content: same max-width as the main
-   column and left-aligned to it, rather than a narrow centred pill. */
+/* Match the bottom chat bar to the page content: the bottom container spans the
+   full viewport, so constrain its inner block-container to the SAME max-width as
+   the main column (1360px) and centre it (margin auto) so it lines up exactly
+   with the content above, rather than a full-width bar. */
+[data-testid="stBottom"] > div {{
+  max-width: 1360px;
+  margin-left: auto;
+  margin-right: auto;
+}}
 [data-testid="stBottom"] .block-container {{
   max-width: 1360px;
+  margin-left: auto;
+  margin-right: auto;
 }}
 [data-testid="stBottom"] [data-testid="stChatInput"] {{
   max-width: 100%;
@@ -300,6 +309,21 @@ _CSS = f"""
   font-size: 0.86rem; line-height: 1.55; max-width: 760px;
 }}
 .footer .built {{ color: {INK_MUTE}; font-size: 0.86rem; margin-top: 0.6rem; }}
+
+/* Subtle legal links at the very bottom + the standalone policy pages. */
+.footer .legal {{ margin-top: 1rem; }}
+.footlink {{
+  color: {INK_MUTE} !important; text-decoration: none !important;
+  font-size: 0.85rem; margin: 0 0.55rem;
+}}
+.footlink:hover {{ color: {ACCENT} !important; text-decoration: none !important; }}
+.footsep {{ color: #B7AD9E; }}
+.policy-title {{
+  text-align: center; font-family: 'Newsreader', Georgia, serif; color: {INK};
+  font-weight: 500; font-size: 2.4rem; margin: 0.6rem 0 0.3rem;
+}}
+.policy-back {{ color: {INK_MUTE}; text-decoration: none; font-size: 0.95rem; }}
+.policy-back:hover {{ color: {ACCENT}; text-decoration: underline; }}
 </style>
 """
 
@@ -404,7 +428,33 @@ def render_footer() -> None:
           are shown with their sources. Always check the cited passage before relying
           on an answer for anything important.</p>
           <p class="built">Built by Aron Sarosi</p>
+          <div class="legal" style="text-align:center;">
+            <a class="footlink" href="?page=terms" target="_blank">Terms of Use</a>
+            <span class="footsep">&middot;</span>
+            <a class="footlink" href="?page=privacy" target="_blank">Privacy Policy</a>
+          </div>
         </div>
         """,
         unsafe_allow_html=True,
     )
+
+
+def render_policy_page(page: str) -> None:
+    """Render a standalone, themed Terms / Privacy page (opened from the footer).
+
+    Same warm background and brand as the main app; the caller follows this with
+    st.stop() so the main UI does not also render underneath.
+    """
+    from legal import PRIVACY_MD, TERMS_MD
+
+    title = "Privacy Policy" if page == "privacy" else "Terms of Use"
+    body = PRIVACY_MD if page == "privacy" else TERMS_MD
+    _left, mid, _right = st.columns([1, 3, 1])
+    with mid:
+        st.markdown(f"<div class='policy-title'>{title}</div>", unsafe_allow_html=True)
+        st.markdown(
+            "<div style='text-align:center; margin-bottom:1.4rem;'>"
+            "<a class='policy-back' href='?'>&larr; Back to the app</a></div>",
+            unsafe_allow_html=True,
+        )
+        st.markdown(body)

@@ -14,10 +14,25 @@ import streamlit as st
 
 from rag import KnowledgeBase, load_settings
 from rag.config import SAMPLE_DOCS_DIR
-from theme import inject_theme, render_demo, render_footer, render_header, render_step
+from theme import (
+    inject_theme,
+    render_demo,
+    render_footer,
+    render_header,
+    render_policy_page,
+    render_step,
+)
 
-st.set_page_config(page_title="AI Knowledge Assistant - Aron Sarosi", layout="wide")
+st.set_page_config(page_title="AI Knowledge Assistant", page_icon="📚", layout="wide")
 inject_theme()
+
+# Routing: ?page=terms and ?page=privacy render as their own themed pages (opened
+# in a new tab from the footer), then stop before the main UI is drawn.
+_page = st.query_params.get("page")
+if _page in ("terms", "privacy"):
+    render_policy_page(_page)
+    st.stop()
+
 render_header()
 render_demo()
 

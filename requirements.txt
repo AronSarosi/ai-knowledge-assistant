@@ -10,6 +10,9 @@ langchain-chroma>=0.1
 langchain-text-splitters>=0.3
 chromadb>=0.5
 
+# Optional tracing (no-op unless LANGFUSE_* keys are set)
+langfuse>=3.0,<4
+
 # Document parsing
 pypdf>=5.0
 docx2txt>=0.8
