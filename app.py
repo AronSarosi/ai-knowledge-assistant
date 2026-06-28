@@ -26,6 +26,42 @@ from theme import (
 st.set_page_config(page_title="AI Knowledge Assistant", page_icon="📚", layout="wide")
 inject_theme()
 
+# The form "Ask" button needs white text on the terracotta background (Streamlit's
+# form-submit button doesn't inherit the theme's primary-button colour by default).
+st.markdown(
+    """
+    <style>
+    [data-testid="stFormSubmitButton"] button {
+      background: #B5532E !important;
+      border: none !important;
+      box-shadow: 0 10px 26px -10px rgba(181,83,46,0.75) !important;
+    }
+    [data-testid="stFormSubmitButton"] button,
+    [data-testid="stFormSubmitButton"] button p { color: #FFFFFF !important; }
+    [data-testid="stFormSubmitButton"] button:hover { background: #99431F !important; }
+    /* Disabled upload control in the demo: a plain cursor, not a "not allowed" sign. */
+    [data-testid="stFileUploaderDropzone"],
+    [data-testid="stFileUploaderDropzone"] * { cursor: default !important; }
+    /* Opened sample document: render it like a paper page, in a smaller font.
+       The container key changes per document (docpage_0, docpage_1, ...), so
+       switching documents creates a fresh element that starts scrolled at the
+       top - hence the prefix match here rather than an exact class. */
+    [class*="st-key-docpage"] { background:#EDE8E0; border:1px solid #E0D8CB; border-radius:12px; padding:16px; }
+    [class*="st-key-docpage"] [data-testid="stMarkdownContainer"] {
+      background:#fff; border:1px solid #E6DFD3; border-radius:6px;
+      box-shadow:0 1px 5px rgba(34,30,25,0.10);
+      max-width:680px; margin:0 auto; padding:30px 40px;
+      font-size:0.8rem; line-height:1.65; color:#3d3a34;
+    }
+    [class*="st-key-docpage"] h1 { font-size:1.1rem !important; margin:0 0 0.3rem; }
+    [class*="st-key-docpage"] h2 { font-size:0.92rem !important; margin-top:1.1rem; }
+    [class*="st-key-docpage"] p, [class*="st-key-docpage"] li { font-size:0.8rem !important; color:#3d3a34; }
+    [class*="st-key-docpage"] blockquote, [class*="st-key-docpage"] em { color:#8A8175; }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
+
 # Routing: ?page=terms and ?page=privacy render as their own themed pages (opened
 # in a new tab from the footer), then stop before the main UI is drawn.
 _page = st.query_params.get("page")
@@ -76,15 +112,44 @@ def build_kb(uploaded) -> tuple[KnowledgeBase, list[str]]:
     return kb, warnings
 
 
+def _doc_title(path) -> str:
+    """'lumen-co-it-security-policy.md' -> 'IT Security Policy' (tab label)."""
+    stem = path.stem
+    for prefix in ("lumen-co-", "lumen-"):
+        if stem.startswith(prefix):
+            stem = stem[len(prefix):]
+    return stem.replace("-", " ").title().replace("It ", "IT ")
+
+
+def _toggle_preview(name: str) -> None:
+    """Show the clicked document, or hide it if it was already open."""
+    current = st.session_state.get("preview_doc")
+    st.session_state.preview_doc = None if current == name else name
+
+
 # --- Step 1: the knowledge base --------------------------------------------
-render_step("1. Your knowledge base", "Upload your documents, or try the built-in sample.")
+if settings.demo_mode:
+    render_step(
+        "1. The sample knowledge base",
+        "This live demo runs on a small, pre-loaded sample. Uploads are switched "
+        "off here - just ask your questions against the sample below.",
+    )
+else:
+    render_step("1. Your knowledge base", "Upload your documents, or try the built-in sample.")
 
 uploaded = st.file_uploader(
     "Upload PDF, Word, text or markdown files",
     type=["pdf", "docx", "txt", "md"],
     accept_multiple_files=True,
     label_visibility="collapsed",
+    disabled=settings.demo_mode,
 )
+if settings.demo_mode:
+    uploaded = None
+    st.caption(
+        "Uploads are off in this demo - the sample documents below are already "
+        "loaded for you, so you can try it straight away."
+    )
 
 # Enforce the public-demo caps so a shared URL can't be abused.
 if uploaded and settings.demo_mode:
@@ -141,32 +206,65 @@ if kb and kb.chunk_count > 0:
             + ", ".join(kb.sources)
         )
     else:
-        st.caption("Using the sample **Lumen & Co. employee handbook**. Upload your own to replace it.")
+        files = sorted(p for p in SAMPLE_DOCS_DIR.glob("*") if p.is_file())
+        st.caption(
+            f"For this demo, a sample set of **{len(files)} documents** is pre-loaded "
+            f"({kb.chunk_count} passages indexed). Click a document to read it - this "
+            "is the data your questions run against."
+        )
+        cols = st.columns(len(files))
+        for i, (col, path) in enumerate(zip(cols, files)):
+            col.button(
+                f"📄 {_doc_title(path)}",
+                key=f"doc_{i}",
+                on_click=_toggle_preview,
+                args=(path.name,),
+                use_container_width=True,
+            )
+        sel = st.session_state.get("preview_doc")
+        if sel and (SAMPLE_DOCS_DIR / sel).is_file():
+            sel_idx = next((i for i, p in enumerate(files) if p.name == sel), None)
+            if sel_idx is not None:
+                # Mark the open document's card with a neutral grey "active" look.
+                st.markdown(
+                    f"<style>.st-key-doc_{sel_idx} button {{ background:#ECE7DE !important; "
+                    f"border-color:#D8CFC0 !important; }} "
+                    f".st-key-doc_{sel_idx} button p {{ color:#5B544B !important; }}</style>",
+                    unsafe_allow_html=True,
+                )
+            with st.container(height=420, key=f"docpage_{sel_idx}"):
+                st.markdown((SAMPLE_DOCS_DIR / sel).read_text(encoding="utf-8"))
 
 st.divider()
 
 # --- Step 2: ask -----------------------------------------------------------
 render_step("2. Ask a question", "Plain English. Every answer shows its sources.")
 
-if not uploaded and kb:
-    st.caption(
-        "Try: *How many holiday days do I get?* · *What's the remote working policy?* "
-        "· *What can I claim for hotels?*"
-    )
-
 st.session_state.setdefault("messages", [])
 st.session_state.setdefault("question_count", 0)
 
-# Replay the conversation so far.
-for msg in st.session_state.messages:
-    with st.chat_message(msg["role"]):
-        st.markdown(msg["content"])
-        for cite in msg.get("citations", []):
-            with st.expander(f"[{cite['index']}] {cite['location']}"):
-                st.markdown(cite["snippet"])
-
-# Demo cap on questions.
 capped = settings.demo_mode and st.session_state.question_count >= settings.demo_question_limit
+kb_ready = bool(kb and kb.chunk_count > 0)
+
+# The question box sits inline, right under the heading, at the page width (not
+# pinned to the bottom of the window). A form so Enter submits and it clears.
+with st.form("ask", clear_on_submit=True):
+    typed = st.text_input(
+        "Your question",
+        placeholder="Ask anything about your data...",
+        label_visibility="collapsed",
+        disabled=capped or not kb_ready,
+    )
+    submitted = st.form_submit_button(
+        "Ask", type="primary", disabled=capped or not kb_ready
+    )
+
+# Example questions, directly below the box.
+if not uploaded and kb:
+    st.caption(
+        "Try: *What's the remote working policy?* · *How do I report a security incident?*"
+    )
+
 if capped:
     st.info(
         f"You've reached the demo limit of {settings.demo_question_limit} questions. "
@@ -174,39 +272,42 @@ if capped:
         "deployment for your team has no limit."
     )
 
-# Only allow questions once there's something searchable in the index.
-kb_ready = bool(kb and kb.chunk_count > 0)
-prompt = st.chat_input("Ask anything about your data...", disabled=capped or not kb_ready)
+# Handle a new question, then render the whole thread below.
+prompt = typed.strip()[:500] if (submitted and typed and typed.strip()) else None
 if prompt and kb_ready:
     st.session_state.messages.append({"role": "user", "content": prompt})
-    with st.chat_message("user"):
-        st.markdown(prompt)
+    with st.spinner("Searching your documents..."):
+        try:
+            answer = kb.ask(prompt)
+        except Exception as exc:
+            answer = None
+            st.error(f"Something went wrong: {exc}")
+    if answer is not None:
+        # `grounded` is False when the model found nothing relevant and said so;
+        # we render that in muted grey so a "not found" reads as an honest miss.
+        citations = [c.model_dump() for c in answer.citations] if answer.grounded else []
+        st.session_state.messages.append(
+            {
+                "role": "assistant",
+                "content": answer.text,
+                "citations": citations,
+                "grounded": answer.grounded,
+            }
+        )
+        st.session_state.question_count += 1
 
-    with st.chat_message("assistant"):
-        with st.spinner("Searching your documents..."):
-            try:
-                answer = kb.ask(prompt)
-            except Exception as exc:
-                answer = None
-                st.error(f"Something went wrong: {exc}")
-
-        if answer is not None:
-            # `grounded` is False when the model found nothing relevant and said
-            # so. Render that in a muted style and skip the (empty) citation
-            # block, so a "not found" reply reads clearly as an honest miss
-            # rather than a failed answer.
-            if answer.grounded:
-                st.markdown(answer.text)
-                citations = [c.model_dump() for c in answer.citations]
-                for cite in citations:
-                    with st.expander(f"[{cite['index']}] {cite['location']}"):
-                        st.markdown(cite["snippet"])
-            else:
-                st.markdown(f":grey[{answer.text}]")
-                citations = []
-            st.session_state.messages.append(
-                {"role": "assistant", "content": answer.text, "citations": citations}
-            )
-            st.session_state.question_count += 1
+# The conversation so far (newest at the bottom). Neutral avatars - a person for
+# the question, a page for the sourced answer - instead of the default coloured faces.
+for msg in st.session_state.messages:
+    with st.chat_message(
+        msg["role"], avatar="👤" if msg["role"] == "user" else "📄"
+    ):
+        if msg["role"] == "assistant" and msg.get("grounded") is False:
+            st.markdown(f":grey[{msg['content']}]")
+        else:
+            st.markdown(msg["content"])
+        for cite in msg.get("citations", []):
+            with st.expander(f"[{cite['index']}] {cite['location']}"):
+                st.markdown(cite["snippet"])
 
 render_footer()

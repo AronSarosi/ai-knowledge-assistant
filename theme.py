@@ -343,11 +343,6 @@ def render_header() -> None:
           <p>Point it at your handbooks, policies and manuals. Your team asks in plain
           English and gets a straight answer, with the exact source quoted.</p>
         </div>
-        <div class="trust">
-          <span class="chip">Cited to the source</span>
-          <span class="chip">Says when it doesn't know</span>
-          <span class="chip">Your documents stay private</span>
-        </div>
         """,
         unsafe_allow_html=True,
     )
@@ -424,10 +419,12 @@ def render_footer() -> None:
     st.markdown(
         """
         <div class="footer">
+          <p style="text-align:center; font-size:1.02rem; color:#5B544B; margin:0 0 1.1rem;">
+          Want this running on <b style="color:#B5532E;">your own</b> documents?
+          <a class="footlink" href="https://aronsarosi.com/#contact" target="_blank">Let&rsquo;s talk</a>.</p>
           <p class="discl">Answers are generated from the documents you provide and
           are shown with their sources. Always check the cited passage before relying
           on an answer for anything important.</p>
-          <p class="built">Built by Aron Sarosi</p>
           <div class="legal" style="text-align:center;">
             <a class="footlink" href="?page=terms" target="_blank">Terms of Use</a>
             <span class="footsep">&middot;</span>

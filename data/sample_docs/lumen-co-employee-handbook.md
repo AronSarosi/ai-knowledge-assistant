@@ -1,86 +1,95 @@
-# Lumen & Co. - Employee Handbook (2026)
+# Employee Handbook (2026)
 
-*This is a fictional sample document, included so you can try the Knowledge
-Assistant straight away. Ask it questions like "How many holiday days do I get?"
-or "What's the remote working policy?" - then upload your own documents to
-replace it.*
+*This is a sample document, provided so you can try the assistant. The company and
+the details below are fictional. Ask it things like "How many holiday days do I
+get?" or "What's the remote working policy?", then watch it answer with the exact
+source quoted.*
 
-## 1. Working hours
+## 1. Welcome to the company
+
+the company is a product design studio. We are a small team that does careful
+work, and this handbook explains how we operate day to day so that everyone has
+the same expectations. It is written in plain language on purpose: if anything
+here is unclear, ask the People team and we will improve the wording.
+
+Nothing in this handbook forms part of your contract of employment. Where this
+handbook and your contract disagree, your contract takes precedence. We review the
+handbook once a year and whenever the law changes, and we tell everyone when a
+section has been updated.
+
+## 2. Working hours
 
 Standard working hours are 9:00am to 5:30pm, Monday to Friday, with one hour for
 lunch. Core hours, when everyone is expected to be reachable, are 10:00am to
 4:00pm. Outside core hours you may shift your start and finish times by up to two
-hours with your manager's agreement.
+hours, as long as your manager agrees and it does not disrupt your team.
 
-## 2. Annual leave (holiday)
+We care about output, not hours logged. If you finish your work early, that is
+fine. If a deadline means you work late one evening, take the time back later in
+the week. We do not expect or reward routinely working past your hours; if your
+workload regularly spills over, that is a planning problem for your manager to
+fix, not something for you to absorb quietly.
+
+## 3. Annual leave (holiday)
 
 Full-time employees receive 28 days of paid annual leave per year, in addition to
-all UK public holidays. Leave accrues monthly and resets on 1 January. You may
-carry over a maximum of 5 unused days into the following year; these must be used
-by 31 March or they are lost. Requests should be submitted at least two weeks in
-advance through the People portal.
+all public holidays. Leave accrues monthly and the leave year runs from 1 January
+to 31 December. Part-time employees receive a pro-rata entitlement based on the
+days they work.
 
-## 3. Sick leave
+You may carry over a maximum of 5 unused days into the following year. Carried-over
+days must be used by 31 March or they are lost. Requests should be submitted at
+least two weeks in advance through the People portal, and longer in advance for
+absences of more than one week, so the team can plan around them. We will not
+unreasonably refuse a request, but during a small number of clearly communicated
+"critical delivery" weeks each year, leave may be limited.
 
-If you are unwell, notify your manager by 9:30am on the first day of absence. For
-absences of up to 7 calendar days you may self-certify. For absences longer than
-7 days a fit note from a doctor is required. Lumen & Co. pays full salary for up
-to 20 working days of sickness absence in any rolling 12-month period.
+## 4. Sick leave
 
-## 4. Remote and hybrid working
+If you are unwell, notify your manager by 9:30am on the first day of absence, by
+phone or message - whatever is quickest. For absences of up to 7 calendar days you
+may self-certify through the People portal. For absences longer than 7 days a
+doctor's note is required.
 
-Lumen & Co. operates a hybrid model. Employees are expected in the office a
-minimum of two days per week, including Wednesday, our company-wide collaboration
-day. The remaining days may be worked remotely. Fully remote arrangements are
-considered case by case and require director approval. Home-office equipment up
-to £400 can be claimed once per two-year period (see Expenses).
+the company pays full salary for up to 20 working days of sickness absence in any
+rolling 12-month period, after which statutory sick pay applies. Medical
+appointments that cannot be scheduled outside working hours are not counted as
+sickness absence; just let your manager know in advance. If you are managing a
+long-term health condition, talk to the People team in confidence and we will
+look at reasonable adjustments.
 
-## 5. Expenses
+## 5. Remote and hybrid working
 
-Reasonable business expenses are reimbursed when submitted with a valid receipt
-through the Finance portal within 30 days. Standard limits:
+the company operates a hybrid model. Employees are expected in the office a minimum
+of two days per week, including Wednesday, which is our company-wide collaboration
+day when we run reviews, planning, and team lunches. The remaining days may be
+worked remotely.
 
-- Daily meal allowance when travelling: £35
-- Standard-class rail travel (first class is not reimbursed)
-- Hotel accommodation up to £150 per night outside London, £200 within London
-- Client entertainment requires prior approval from a department head
+Fully remote arrangements are considered case by case and require director
+approval. When working remotely you are expected to be reachable during core hours,
+to have a reliable internet connection, and to take calls somewhere quiet enough to
+work properly. A one-time home-office budget of 400 is available to spend on a
+desk, chair, or monitor (claimed through the Finance portal), and it renews once every two
+years.
 
-Expenses over £500 require pre-approval. Mileage for personal-car business use is
-reimbursed at 45p per mile for the first 10,000 miles per year.
+## 6. Pay and expenses
 
-## 6. Probation
+Salaries are paid monthly on the last working day of the month. Pay is reviewed
+once a year in March, with any change taking effect from April. Reasonable business
+expenses are reimbursed when submitted with a valid, itemised receipt through the
+Finance portal within 30 days of the spend.
 
-New employees are subject to a six-month probationary period. During probation
-the notice period is two weeks on either side. A probation review is held at three
-months and again before confirmation. On successful completion the standard notice
-period of one month (three months for senior roles) applies.
+## 7. Probation and notice
 
-## 7. Parental leave
+New employees serve a six-month probation period. During probation the notice
+period is one week on either side. After you pass probation, the standard notice
+period is one month. We will always tell you clearly how probation is going well
+before it ends, with no surprises at the final review.
 
-Eligible employees are entitled to enhanced parental leave: 26 weeks at full pay
-followed by 13 weeks at statutory pay for the primary caregiver, and 6 weeks at
-full pay for the secondary caregiver. You must have completed your probationary
-period and give at least 15 weeks' notice before the expected date.
+## 8. Conduct
 
-## 8. IT and security
-
-All company laptops are encrypted and must be locked when unattended. Passwords
-must be at least 14 characters and are managed through the company password
-manager; never reuse personal passwords. Multi-factor authentication is mandatory
-on all company accounts. Report any lost device or suspected phishing email to
-security@lumenco.example immediately - do not attempt to deal with it yourself.
-Company data must never be stored on personal cloud drives or USB sticks.
-
-## 9. Code of conduct
-
-Lumen & Co. expects all employees to treat colleagues, clients, and partners with
-respect. Harassment, discrimination, and bullying are not tolerated and may result
-in dismissal. Conflicts of interest must be declared to your manager. Gifts from
-suppliers over £50 in value must be reported to the People team.
-
-## 10. Learning and development
-
-Every employee has an annual training budget of £1,000 for courses, books, and
-conferences relevant to their role. Requests are approved by your manager. One paid
-"learning day" per quarter is available for focused self-study; book it through the
-People portal at least one week ahead.
+We expect everyone to treat colleagues, clients, and suppliers with respect. We do
+not tolerate harassment, bullying, or discrimination of any kind, and we take any
+report seriously and handle it confidentially. If something at work is making you
+uncomfortable, you can raise it with your manager, with any director, or with the
+People team, and you will never be penalised for raising a concern in good faith.

@@ -54,9 +54,15 @@ class VectorStore:
         self.settings = settings
         # No persist_directory => Chroma runs purely in memory. The index lives
         # for the life of the process (we cache it per user session in app.py).
+        # Use COSINE distance: OpenAI embeddings are unit-normalised, so cosine is
+        # the right metric and makes similarity_search_with_relevance_scores return
+        # meaningful 0-1 scores. Chroma defaults to L2, whose normalised relevance
+        # scores come out near-zero even for strong matches, which made the
+        # relevance threshold wrongly refuse legitimate questions.
         self._db = Chroma(
             collection_name="knowledge_base",
             embedding_function=_embeddings(settings),
+            collection_metadata={"hnsw:space": "cosine"},
         )
 
     def add(self, chunks: list[Chunk]) -> int:
